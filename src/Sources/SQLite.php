@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Locr\Lib\Vms2TileDbReader\Sources;
 
+use Locr\Lib\Vms2TileDbReader\Exceptions\{InvalidTypeException, SourceDbNotFoundException};
+
 class SQLite implements ISource
 {
     private \PDO $db;
@@ -24,7 +26,11 @@ class SQLite implements ISource
     public function __construct(string $filename)
     {
         if (!file_exists($filename)) {
-            throw new \Exception(__METHOD__ . '(string $filename) => $filename does not exists.', 404);
+            throw new SourceDbNotFoundException(
+                $filename,
+                __METHOD__ . '(string $filename) => $filename does not exists.',
+                404
+            );
         }
 
         $this->db = new \PDO("sqlite:{$filename}");
@@ -60,14 +66,17 @@ class SQLite implements ISource
                 $key = 'locr';
                 $type = 'Polygons';
                 break;
+            default: // ignore
+                break;
         }
 
         $type = match ($type) {
             'Points' => 0,
             'Lines' => 1,
             'Polygons' => 2,
-            default => throw new \Exception(
-                __METHOD__ . '(int $x, int $y, int $z, string $key, string $value, string $type): ?string' .
+            default => throw new InvalidTypeException(
+                $type,
+                __METHOD__ . '(int $x, int $y, int $z, string $key, string $value, string $type): string' .
                     ' => Invalid $type value (' . $type . '). Allowed values are: "Points", "Lines" or "Polygons".',
                 500
             )
@@ -84,6 +93,9 @@ class SQLite implements ISource
             case 'blue_marble':
             case 'elevation':
                 $detailZooms = [0, 0, 2, 2, 4, 4, 6, 6, 8, 8, 10, 10, 10, 10, 10];
+                break;
+
+            default: // ignore
                 break;
         }
         $detailZoom = $detailZooms[max(min($z, 14), 0)];
