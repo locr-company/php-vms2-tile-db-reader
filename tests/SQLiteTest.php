@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace UnitTests;
 
 use Locr\Lib\Vms2TileDbReader\DataType;
-use Locr\Lib\Vms2TileDbReader\Exceptions\{InvalidTypeException, SourceDbNotFoundException};
+use Locr\Lib\Vms2TileDbReader\Exceptions\SourceDbNotFoundException;
 use Locr\Lib\Vms2TileDbReader\Sources\SQLite;
 use PHPUnit\Framework\Attributes\{CoversClass, UsesClass};
 use PHPUnit\Framework\TestCase;
 
 #[CoversClass(SQLite::class)]
 #[UsesClass(SourceDbNotFoundException::class)]
-#[UsesClass(InvalidTypeException::class)]
 final class SQLiteTest extends TestCase
 {
     public function testGetDataBuildingPolygons(): void

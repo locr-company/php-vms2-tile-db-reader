@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Locr\Lib\Vms2TileDbReader\Sources;
 
 use Locr\Lib\Vms2TileDbReader\DataType;
-use Locr\Lib\Vms2TileDbReader\Exceptions\{InvalidTypeException, SourceDbNotFoundException};
+use Locr\Lib\Vms2TileDbReader\Exceptions\SourceDbNotFoundException;
 
 class SQLite implements ISource
 {
