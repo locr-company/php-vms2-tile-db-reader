@@ -1,0 +1,34 @@
+{
+    "name": "locr-company/vms2-tile-db-reader",
+    "description": "A class for reading tile data from a database.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Locr\\Lib\\Vms2TileDbReader\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ringo Leese",
+            "email": "r.leese@locr.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "ext-sqlite3": "*"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.7",
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^10.4"
+    },
+    "scripts": {
+        "phpcs": "./vendor/bin/phpcs ./src",
+        "phpstan": "@phpstan-8.1",
+        "phpstan-8.1": "./vendor/bin/phpstan --configuration=phpstan-8.1.neon",
+        "phpstan-8.2": "./vendor/bin/phpstan --configuration=phpstan-8.2.neon",
+        "test": "./vendor/bin/phpunit"
+    }
+}
