@@ -1,7 +1,7 @@
 # Vms2TileDbReader
 
 ![php](https://img.shields.io/badge/php-%3E%3D%208.1-8892BF.svg)
-[![codecov](https://codecov.io/gh/locr-company/php-vms2-tile-db-reader/graph/badge.svg?token=4VnTf1XVY2)](https://codecov.io/gh/locr-company/php-vms2-tile-db-reader)
+[![codecov](https://codecov.io/gh/locr-company/php-vms2-tile-db-reader/graph/badge.svg?token=920M72RYI9)](https://codecov.io/gh/locr-company/php-vms2-tile-db-reader)
 ![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/php-vms2-tile-db-reader/php-8.1.yml)
 ![github_tag](https://img.shields.io/github/v/tag/locr-company/php-vms2-tile-db-reader)
 ![packagist](https://img.shields.io/packagist/v/locr-company/vms2-tile-db-reader)
