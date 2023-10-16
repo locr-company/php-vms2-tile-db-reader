@@ -129,13 +129,15 @@ class SQLite implements ISource
             ' AND osm_value = :osm_value AND x >= :x_min AND x < :x_max  AND y >= :y_min AND y < :y_max AND z = :z';
 
         for ($queryZ = 0; $queryZ <= $maxTileZoom; $queryZ++) {
-            $rows = null;
+            $query = '';
+            $queryParams = [];
 
             if ($queryZ <= $z) {
                 $queryX = $x >> ($z - $queryZ);
                 $queryY = $y >> ($z - $queryZ);
 
-                $singleTileQueryParams = [
+                $query = $singleTileQuery;
+                $queryParams = [
                     'detail_zoom' => $detailZoom,
                     'object_type' => $type->value,
                     'osm_key' => $key,
@@ -144,12 +146,6 @@ class SQLite implements ISource
                     'y' => $queryY,
                     'z' => $queryZ
                 ];
-
-                $statement = $this->db->prepare($singleTileQuery);
-                $statement->setFetchMode(\PDO::FETCH_ASSOC);
-                $statement->execute($singleTileQueryParams);
-
-                $rows = $statement->fetchAll();
             } else {
                 $queryLeftX = $x << ($queryZ - $z);
                 $queryTopY = $y << ($queryZ - $z);
@@ -157,7 +153,8 @@ class SQLite implements ISource
                 $queryRightX = $queryLeftX + (1 << ($queryZ - $z));
                 $queryBottomY = $queryTopY + (1 << ($queryZ - $z));
 
-                $multiTileQueryParams = [
+                $query = $multiTileQuery;
+                $queryParams = [
                     'detail_zoom' => $detailZoom,
                     'object_type' => $type->value,
                     'osm_key' => $key,
@@ -168,13 +165,13 @@ class SQLite implements ISource
                     'y_max' => $queryBottomY,
                     'z' => $queryZ
                 ];
-
-                $statement = $this->db->prepare($multiTileQuery);
-                $statement->setFetchMode(\PDO::FETCH_ASSOC);
-                $statement->execute($multiTileQueryParams);
-
-                $rows = $statement->fetchAll();
             }
+
+            $statement = $this->db->prepare($query);
+            $statement->setFetchMode(\PDO::FETCH_ASSOC);
+            $statement->execute($queryParams);
+
+            $rows = $statement->fetchAll();
 
             if (count($rows) > 0) {
                 $tileWeight += pow(4, $maxTileZoom - $queryZ);
