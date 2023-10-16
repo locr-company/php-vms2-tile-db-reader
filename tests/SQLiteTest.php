@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace UnitTests;
 
+use Locr\Lib\Vms2TileDbReader\DataType;
 use Locr\Lib\Vms2TileDbReader\Exceptions\{InvalidTypeException, SourceDbNotFoundException};
 use Locr\Lib\Vms2TileDbReader\Sources\SQLite;
 use PHPUnit\Framework\Attributes\{CoversClass, UsesClass};
@@ -17,7 +18,14 @@ final class SQLiteTest extends TestCase
     public function testGetDataBuildingPolygons(): void
     {
         $tileDb = new SQLite(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'braunschweig.sqlite');
-        $tileData = $tileDb->getRawData(x: 34686, y:  21566, z: 16, key: 'building', value: '*', type: 'Polygons');
+        $tileData = $tileDb->getRawData(
+            x: 34686,
+            y:  21566,
+            z: 16,
+            key: 'building',
+            value: '*',
+            type: DataType::Polygons
+        );
 
         $this->assertGreaterThanOrEqual(4, strlen($tileData));
     }
@@ -25,7 +33,7 @@ final class SQLiteTest extends TestCase
     public function testGetDataCityPoints(): void
     {
         $tileDb = new SQLite(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'braunschweig.sqlite');
-        $tileData = $tileDb->getRawData(34686, 21566, 16, 'place', 'city', 'Points');
+        $tileData = $tileDb->getRawData(x: 34686, y: 21566, z: 16, key: 'place', value: 'city', type: DataType::Points);
 
         $this->assertGreaterThanOrEqual(4, strlen($tileData));
     }
@@ -33,7 +41,7 @@ final class SQLiteTest extends TestCase
     public function testGetLandData(): void
     {
         $tileDb = new SQLite(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'braunschweig.sqlite');
-        $tileData = $tileDb->getRawData(34686, 21566, 16, 'land', '', '');
+        $tileData = $tileDb->getRawData(x: 34686, y: 21566, z: 16, key: 'land');
 
         $this->assertGreaterThanOrEqual(4, strlen($tileData));
     }
@@ -41,7 +49,7 @@ final class SQLiteTest extends TestCase
     public function testGetTerrainData(): void
     {
         $tileDb = new SQLite(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'braunschweig.sqlite');
-        $tileData = $tileDb->getRawData(34686, 21566, 16, 'terrain', '', '');
+        $tileData = $tileDb->getRawData(x: 34686, y: 21566, z: 16, key: 'terrain');
 
         $this->assertGreaterThanOrEqual(4, strlen($tileData));
     }
@@ -49,7 +57,7 @@ final class SQLiteTest extends TestCase
     public function testGetBlueMarbleData(): void
     {
         $tileDb = new SQLite(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'braunschweig.sqlite');
-        $tileData = $tileDb->getRawData(34686, 21566, 16, 'blue_marble', '', '');
+        $tileData = $tileDb->getRawData(x: 34686, y: 21566, z: 16, key: 'blue_marble');
 
         $this->assertGreaterThanOrEqual(4, strlen($tileData));
     }
@@ -57,7 +65,7 @@ final class SQLiteTest extends TestCase
     public function testGetDataFromInternalMultiTileQuery(): void
     {
         $tileDb = new SQLite(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'braunschweig.sqlite');
-        $tileData = $tileDb->getRawData(1083, 673, 12, 'land', '', '');
+        $tileData = $tileDb->getRawData(x: 1083, y: 673, z: 12, key: 'land');
 
         $this->assertGreaterThanOrEqual(4, strlen($tileData));
     }
@@ -69,17 +77,5 @@ final class SQLiteTest extends TestCase
         );
 
         new SQLite(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'invalid.sqlite');
-    }
-
-    public function testInvalidType(): void
-    {
-        $this->expectExceptionMessage(
-            'Locr\Lib\Vms2TileDbReader\Sources\SQLite::' .
-                'getRawData(int $x, int $y, int $z, string $key, string $value, string $type): string' .
-                ' => Invalid $type value (Invalid). Allowed values are: "Points", "Lines" or "Polygons"'
-        );
-
-        $tileDb = new SQLite(__DIR__ . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'braunschweig.sqlite');
-        $tileDb->getRawData(x: 34686, y:  21566, z: 16, key: 'building', value: '*', type: 'Invalid');
     }
 }

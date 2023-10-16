@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Locr\Lib\Vms2TileDbReader\Sources;
 
+use Locr\Lib\Vms2TileDbReader\DataType;
 use Locr\Lib\Vms2TileDbReader\Exceptions\{InvalidTypeException, SourceDbNotFoundException};
 
 class SQLite implements ISource
@@ -37,51 +38,8 @@ class SQLite implements ISource
         $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
-    /**
-     * Get the specified data from the database. \
-     * This method can throw an exception, if the $type-parameter is invalid or if the internal database query failed.
-     *
-     * ```php
-     * <?php
-     *
-     * use Locr\Lib\Vms2TileDbReader\Sources\SQLite;
-     *
-     * $tileDb = new SQLite('germany.sqlite');
-     * $tileData = $tileDb->getRawData(x: 34686, y: 21566, z: 16, key: 'building', value: '*', type: 'Polygons');
-     *
-     * header('Content-Type: application/octet-stream'); // The Content-Type is required for the Web-App.
-     * print $tileData;
-     * ```
-     */
-    public function getRawData(int $x, int $y, int $z, string $key, string $value, string $type): string
+    private static function getDetailZoom(int $z, string $value, DataType $type): int
     {
-        switch ($key) {
-            case 'land':
-            case 'terrain':
-            case 'blue_marble':
-            case 'elevation':
-            case 'bathymetry':
-            case 'depth':
-                $value = $key;
-                $key = 'locr';
-                $type = 'Polygons';
-                break;
-            default: // ignore
-                break;
-        }
-
-        $type = match ($type) {
-            'Points' => 0,
-            'Lines' => 1,
-            'Polygons' => 2,
-            default => throw new InvalidTypeException(
-                $type,
-                __METHOD__ . '(int $x, int $y, int $z, string $key, string $value, string $type): string' .
-                    ' => Invalid $type value (' . $type . '). Allowed values are: "Points", "Lines" or "Polygons".',
-                500
-            )
-        };
-
         $detailZooms = [0, 0, 2, 2, 4, 4, 6, 6, 8, 8, 10, 10, 12, 12, 14];
         switch ($value) {
             case 'terrain':
@@ -100,9 +58,61 @@ class SQLite implements ISource
         }
         $detailZoom = $detailZooms[max(min($z, 14), 0)];
 
-        if ($type === 0) {
+        if ($type === DataType::Points) {
             $detailZoom = 14;
         }
+
+        return $detailZoom;
+    }
+
+    /**
+     * Get the specified data from the database. \
+     * This method can throw an exception, if the $type-parameter is invalid or if the internal database query failed.
+     *
+     * ```php
+     * <?php
+     *
+     * use Locr\Lib\Vms2TileDbReader\DataType;
+     * use Locr\Lib\Vms2TileDbReader\Sources\SQLite;
+     *
+     * $tileDb = new SQLite('germany.sqlite');
+     * $tileData = $tileDb->getRawData(
+     *  x: 34686,
+     *  y: 21566,
+     *  z: 16,
+     *  key: 'building',
+     *  value: '*',
+     *  type: DataType::Polygons
+     * );
+     *
+     * header('Content-Type: application/octet-stream'); // The Content-Type is required for the Web-App.
+     * print $tileData;
+     * ```
+     */
+    public function getRawData(
+        int $x,
+        int $y,
+        int $z,
+        string $key,
+        string $value = '',
+        DataType $type = DataType::Polygons
+    ): string {
+        switch ($key) {
+            case 'land':
+            case 'terrain':
+            case 'blue_marble':
+            case 'elevation':
+            case 'bathymetry':
+            case 'depth':
+                $value = $key;
+                $key = 'locr';
+                $type = DataType::Polygons;
+                break;
+            default: // ignore
+                break;
+        }
+
+        $detailZoom = self::getDetailZoom($z, $value, $type);
 
         $maxTileZoom = 16;
         $data = '';
@@ -127,7 +137,7 @@ class SQLite implements ISource
 
                 $singleTileQueryParams = [
                     'detail_zoom' => $detailZoom,
-                    'object_type' => $type,
+                    'object_type' => $type->value,
                     'osm_key' => $key,
                     'osm_value' => $value,
                     'x' => $queryX,
@@ -149,7 +159,7 @@ class SQLite implements ISource
 
                 $multiTileQueryParams = [
                     'detail_zoom' => $detailZoom,
-                    'object_type' => $type,
+                    'object_type' => $type->value,
                     'osm_key' => $key,
                     'osm_value' => $value,
                     'x_min' => $queryLeftX,

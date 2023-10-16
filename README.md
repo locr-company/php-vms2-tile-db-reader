@@ -19,10 +19,11 @@ composer require locr-company/vms2-tile-db-reader
 ```php
 <?php
 
+use Locr\Lib\Vms2TileDbReader\DataType;
 use Locr\Lib\Vms2TileDbReader\Sources\SQLite;
 
 $tileDb = new SQLite('germany.sqlite');
-$tileData = $tileDb->getRawData(x: 34686, y: 21566, z: 16, key: 'building', value: '*', type: 'Polygons');
+$tileData = $tileDb->getRawData(x: 34686, y: 21566, z: 16, key: 'building', value: '*', type: DataType::Polygons);
 
 header('Content-Type: application/octet-stream'); // The Content-Type is required for the Web-App.
 print $tileData;
