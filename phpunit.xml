@@ -3,6 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
   bootstrap="vendor/autoload.php"
+  colors="true"
   executionOrder="depends,defects"
   displayDetailsOnTestsThatTriggerDeprecations="true"
   displayDetailsOnTestsThatTriggerErrors="true"
@@ -17,12 +18,6 @@
       <directory>tests</directory>
     </testsuite>
   </testsuites>
-  <coverage>
-    <report>
-      <clover outputFile="test-results/clover.xml"/>
-      <html outputDirectory="test-results/html"/>
-    </report>
-  </coverage>
   <source>
     <include>
       <directory suffix=".php">src</directory>

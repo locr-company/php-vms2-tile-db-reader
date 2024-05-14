@@ -35,6 +35,5 @@ Clone the repository
 
 ```bash
 git clone git@github.com:locr-company/php-vms2-tile-db-reader.git
-cd php-vms2-tile-db-reader/.git/hooks && ln -s ../../git-hooks/* . && cd ../..
-composer install
+cd php-vms2-tile-db-reader && composer install
 ```
