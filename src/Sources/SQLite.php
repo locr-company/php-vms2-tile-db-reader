@@ -177,7 +177,15 @@ class SQLite implements ISource
                 $tileWeight += pow(4, $maxTileZoom - $queryZ);
 
                 foreach ($rows as $row) {
-                    $dataLength = (isset($row['data']) && is_string($row['data'])) ? strlen($row['data']) : 0;
+                    if (!is_array($row)) {
+                        continue;
+                    }
+                    $data = '';
+                    $dataLength = 0;
+                    if (isset($row['data']) && is_string($row['data'])) {
+                        $data = $row['data'];
+                        $dataLength = strlen($data);
+                    }
 
                     $data .= pack("L", $row['x']);
                     $data .= pack("L", $row['y']);
@@ -186,7 +194,7 @@ class SQLite implements ISource
                     $data .= pack("L", $dataLength);
 
                     if ($dataLength > 0) {
-                        $data .= $row['data'];
+                        $data .= $data;
                     }
 
                     $numberOfTiles++;
