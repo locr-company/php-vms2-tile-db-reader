@@ -29,9 +29,9 @@
         "ext-sqlite3": "*"
     },
     "require-dev": {
-        "captainhook/captainhook": "^5.23",
+        "captainhook/captainhook": "^5.25",
         "captainhook/hook-installer": "^1.0",
-        "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan": "^2.1",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^10.5",
@@ -55,9 +55,9 @@
             "@dev:analyze",
             "@dev:test:unit"
         ],
-        "dev:test:coverage:ci": "phpunit --display-warnings --coverage-clover test-results/clover.xml",
-        "dev:test:coverage:html": "phpunit --display-warnings --coverage-html test-results/html",
-        "dev:test:unit": "phpunit --display-warnings",
+        "dev:test:coverage:ci": "phpunit --coverage-clover test-results/clover.xml",
+        "dev:test:coverage:html": "phpunit --coverage-html test-results/html",
+        "dev:test:unit": "phpunit",
         "test": "@dev:test"
     }
 }
