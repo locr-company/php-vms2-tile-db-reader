@@ -1,15 +1,11 @@
 {
     "commit-msg": {
-        "enabled": true,
+        "enabled": false,
         "actions": []
     },
     "pre-push": {
-        "enabled": true,
-        "actions": [
-            {
-                "action": "composer test"
-            }
-        ]
+        "enabled": false,
+        "actions": []
     },
     "pre-commit": {
         "enabled": true,
@@ -25,6 +21,12 @@
                         "args": ["php"]
                     }
                 ]
+            },
+            {
+                "action": "composer dev:analyze:phpstan"
+            },
+            {
+                "action": "composer dev:test:unit"
             }
         ]
     },

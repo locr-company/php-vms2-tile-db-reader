@@ -180,11 +180,11 @@ class SQLite implements ISource
                     if (!is_array($row)) {
                         continue;
                     }
-                    $data = '';
+                    $rowData = '';
                     $dataLength = 0;
                     if (isset($row['data']) && is_string($row['data'])) {
-                        $data = $row['data'];
-                        $dataLength = strlen($data);
+                        $rowData = $row['data'];
+                        $dataLength = strlen($rowData);
                     }
 
                     $data .= pack("L", $row['x']);
@@ -194,7 +194,7 @@ class SQLite implements ISource
                     $data .= pack("L", $dataLength);
 
                     if ($dataLength > 0) {
-                        $data .= $data;
+                        $data .= $rowData;
                     }
 
                     $numberOfTiles++;

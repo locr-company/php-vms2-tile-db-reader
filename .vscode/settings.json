@@ -1,5 +1,9 @@
 {
     "editor.rulers": [120],
     "intelephense.environment.phpVersion": "8.1.0",
-    "phpstan.configFile": "phpstan-8.1.neon"
+    "phpstan.configFile": "phpstan-8.1.neon",
+    "sonarlint.connectedMode.project": {
+        "connectionId": "locr-company",
+        "projectKey": "locr-company_php-vms2-tile-db-reader"
+    }
 }
